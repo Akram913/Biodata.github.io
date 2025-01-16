@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kembang Api Tahun Baru</title>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background-color: black;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: Arial, sans-serif;
+    }
+
+    #firework-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background-color: white;
+      border-radius: 50%;
+      animation: floatUp var(--speed) linear infinite;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(100vh);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-10vh);
+        opacity: 0;
+      }
+    }
+
+    .rocket {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 5px;
+      height: 20px;
+      background-color: red;
+      border-radius: 50%;
+      transform: translateX(-50%);
+      animation: flyUp 2s ease-in forwards;
+    }
+
+    .spark {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background-color: red;
+      border-radius: 50%;
+      animation: fall 0.5s ease-out forwards;
+    }
+
+    @keyframes flyUp {
+      to {
+        transform: translate(-50%, -200%);
+      }
+    }
+
+    @keyframes fall {
+      0% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+    }
+
+    .explosion {
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      animation: scatter 1s ease-out forwards;
+    }
+
+    @keyframes scatter {
+      0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(var(--x-offset), var(--y-offset)) scale(0.5);
+        opacity: 0;
+      }
+    }
+
+    #message {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 3rem;
+      text-shadow: 0 0 10px white, 0 0 20px white;
+      cursor: pointer;
+      text-align: center;
+      z-index: 2;
+    }
+
+    #start-button {
+      position: absolute;
+      bottom: 20px;
+      padding: 10px 20px;
+      font-size: 1.5rem;
+      background-color: white;
+      color: black;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    #start-button:hover {
+      background-color: lightgray;
+    }
+
+    @keyframes colorChange {
+      0% { color: red; }
+      25% { color: yellow; }
+      50% { color: green; }
+      75% { color: blue; }
+      100% { color: purple; }
+    }
+
+    #message:hover {
+      animation: colorChange 1s infinite;
+    }
+
+    .colorful {
+      animation: colorChange 1s infinite;
+    }
+  </style>
+</head>
+<body>
+  <div id="firework-container"></div>
+  <div id="message" onclick="changeMessage()">Selamat Tahun Baru!</div>
+  <button id="start-button">Mulai</button>
+
+  <script>
+    function createStars() {
+      const container = document.getElementById('firework-container');
+      const maxStars = 40;
+      let activeStars = 0;
+      setInterval(() => {
+        if (activeStars< maxStars){
+
+          const numStars = Math.min(Math.floor(Math.random() * 4) + 1, maxStars - activeStars);
+
+          for (let i = 0; i < numStars; i++){
+          const star = document.createElement('div');
+          star.classList.add('star');
+
+          const x = Math.random() * 100;
+          const speed = Math.random() * 5 + 5;
+
+          star.style.left = `${x}%`;
+          star.style.setProperty('--speed', `${speed}s`);
+
+          container.appendChild(star);
+          activeStars++;
+
+          star.addEventListener('animationend', () => {
+            container.removeChild(star);
+            activeStars--; // Kurangi jumlah bintang aktif saat animasi selesai
+            });
+
+          }
+        }
+      }, 1000); // Tambahkan batch bintang baru setiap 0,5 detik
+    }
+
+    function createRocket() {
+      const container = document.getElementById('firework-container');
+      const rocket = document.createElement('div');
+      rocket.classList.add('rocket');
+      container.appendChild(rocket);
+
+      const interval = setInterval(() => {
+        const spark = document.createElement('div');
+        spark.classList.add('spark');
+        spark.style.left = '50%';
+        spark.style.bottom = `${Math.random() * 10}px`;
+        container.appendChild(spark);
+
+        spark.addEventListener('animationend', () => {
+          container.removeChild(spark);
+        });
+      }, 100);
+
+      rocket.addEventListener('animationend', () => {
+        clearInterval(interval);
+        container.removeChild(rocket);
+        createFirework(50, 50);
+
+        const message = document.getElementById('message');
+        message.style.display = 'block';
+      });
+    }
+
+    function createFirework(x, y) {
+      const container = document.getElementById('firework-container');
+
+      for (let i = 0; i < 20; i++) {
+        const explosion = document.createElement('div');
+        explosion.classList.add('explosion');
+
+        const randomColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+        explosion.style.backgroundColor = randomColor;
+
+        const angle = Math.random() * 2 * Math.PI;
+        const distance = Math.random() * 150 + 50; // Spread the explosion more
+
+        const xOffset = Math.cos(angle) * distance;
+        const yOffset = Math.sin(angle) * distance;
+
+        explosion.style.left = `${x}%`;
+        explosion.style.top = `${y}%`;
+        explosion.style.setProperty('--x-offset', `${xOffset}px`);
+        explosion.style.setProperty('--y-offset', `${yOffset}px`);
+
+        container.appendChild(explosion);
+
+        explosion.addEventListener('animationend', () => {
+          container.removeChild(explosion);
+        });
+      }
+    }
+
+    function randomExplosion() {
+      const x = Math.random() * 100; // Random x position
+      const y = Math.random() * 100; // Random y position
+      createFirework(x, y);
+    }
+
+    function startRandomExplosions() {
+      setInterval(randomExplosion, 1000); // Create explosion every 1 second
+    }
+
+    function changeMessage() {
+      const message = document.getElementById('message');
+      message.textContent = 'Terima Kasih Min!';
+      message.classList.add('colorful');
+      
+    }
+
+    function createFireworkklik(event) {
+      const x = (event.clientX / window.innerWidth) * 100;
+      const y = (event.clientY / window.innerHeight) * 100;
+      createFirework(x, y);
+    }
+
+    createStars(); // Show stars before the button is pressed
+
+    document.getElementById('start-button').addEventListener('click', () => {
+      document.getElementById('start-button').style.display = 'none';
+      createRocket();
+
+      setTimeout(() => {
+        document.addEventListener('click', createFireworkklik)
+        startRandomExplosions();
+      }, 2500);
+      
+    });
+
+
+  </script>
+</body>
+</html>
