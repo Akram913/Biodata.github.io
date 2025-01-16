@@ -150,6 +150,7 @@
     user-select: none;
     -webkit-user-select: none;
     -ms-user-select: none;
+    outline: none;
   }
 
     .colorful {
@@ -287,24 +288,25 @@
       }, 2500);
       
     });
-    const star = document.getElementsByClassName('.star');
-    const rocket = document.getElementsByClassName('.rocket');
+    const elements = document.querySelectorAll('.star, .rocket');
 
-    function stopAnimation() {
-      star.style.animationPlayState = 'paused';
-      rocket.style.animationPlayState = 'paused';
+    function pauseAnimations() {
+      elements.forEach(element => {
+        element.style.animationPlayState = 'paused';
+      });
     }
 
-    function resumeAnimation() {
-      star.style.animationPlayState = 'running';
-      rocket.style.animationPlayState = 'running';
+    function resumeAnimations() {
+      elements.forEach(element => {
+        element.style.animationPlayState = 'running';
+      });
     }
 
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
-        stopAnimation();
+        pauseAnimations();
       } else {
-        resumeAnimation();
+        resumeAnimations();
       }
     });
 
