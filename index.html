@@ -147,6 +147,12 @@
       animation: colorChange 1s infinite;
     }
 
+    .no-select {
+    user-select: none; /* Tidak bisa diseleksi */
+    -webkit-user-select: none; /* Untuk browser berbasis WebKit */
+    -ms-user-select: none; /* Untuk Internet Explorer */
+  }
+
     .colorful {
       animation: colorChange 1s infinite;
     }
@@ -154,7 +160,7 @@
 </head>
 <body>
   <div id="firework-container"></div>
-  <div id="message" onclick="changeMessage()">Selamat Tahun Baru!</div>
+  <div id="message" class="no-select" onclick="changeMessage()">Selamat Tahun Baru!</div>
   <button id="start-button">Mulai</button>
 
   <script>
