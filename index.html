@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kembang Api Tahun Baru</title>
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
   <style>
     body {
       margin: 0;
@@ -148,9 +147,9 @@
     }
 
     .no-select {
-    user-select: none; /* Tidak bisa diseleksi */
-    -webkit-user-select: none; /* Untuk browser berbasis WebKit */
-    -ms-user-select: none; /* Untuk Internet Explorer */
+    user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
   }
 
     .colorful {
@@ -188,12 +187,12 @@
 
           star.addEventListener('animationend', () => {
             container.removeChild(star);
-            activeStars--; // Kurangi jumlah bintang aktif saat animasi selesai
+            activeStars--;
             });
 
           }
         }
-      }, 1000); // Tambahkan batch bintang baru setiap 0,5 detik
+      }, 1000);
     }
 
     function createRocket() {
@@ -235,7 +234,7 @@
         explosion.style.backgroundColor = randomColor;
 
         const angle = Math.random() * 2 * Math.PI;
-        const distance = Math.random() * 150 + 50; // Spread the explosion more
+        const distance = Math.random() * 150 + 50;
 
         const xOffset = Math.cos(angle) * distance;
         const yOffset = Math.sin(angle) * distance;
@@ -276,7 +275,7 @@
       createFirework(x, y);
     }
 
-    createStars(); // Show stars before the button is pressed
+    createStars();
 
     document.getElementById('start-button').addEventListener('click', () => {
       document.getElementById('start-button').style.display = 'none';
@@ -287,6 +286,26 @@
         startRandomExplosions();
       }, 2500);
       
+    });
+    const star = document.getElementsByClassName('.star');
+    const rocket = document.getElementsByClassName('.rocket');
+
+    function stopAnimation() {
+      star.style.animationPlayState = 'paused';
+      rocket.style.animationPlayState = 'paused';
+    }
+
+    function resumeAnimation() {
+      star.style.animationPlayState = 'running';
+      rocket.style.animationPlayState = 'running';
+    }
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        stopAnimation();
+      } else {
+        resumeAnimation();
+      }
     });
 
 
